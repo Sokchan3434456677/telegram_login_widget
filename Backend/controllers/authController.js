@@ -1,7 +1,5 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { SESSION_SECRET } = require('../config/env'); // Still needed for JWT signing
 
 exports.checkTelegramAuth = async (req, res) => {
   try {
@@ -46,14 +44,7 @@ exports.checkTelegramAuth = async (req, res) => {
       { new: true, upsert: true }
     );
 
-    // Generate JWT
-    const token = jwt.sign(
-      { telegram_id: user.telegram_id, _id: user._id },
-      SESSION_SECRET,
-      { expiresIn: '1d' }
-    );
-
-    res.json({ success: true, user, token });
+    res.json({ success: true, user });
   } catch (error) {
     console.error('Authentication error:', error);
     res.status(500).json({ error: 'Authentication failed' });
@@ -61,22 +52,5 @@ exports.checkTelegramAuth = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  // Stateless logout: client just deletes the token
   res.json({ success: true });
-};
-
-exports.checkAuth = async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
-  const token = authHeader.split(' ')[1];
-  try {
-    const decoded = jwt.verify(token, SESSION_SECRET);
-    const user = await User.findOne({ telegram_id: decoded.telegram_id });
-    if (user) {
-      return res.json(user);
-    }
-    res.status(401).json({ error: 'Unauthorized' });
-  } catch (e) {
-    res.status(401).json({ error: 'Unauthorized' });
-  }
 };
