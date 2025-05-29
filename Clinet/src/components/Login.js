@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { checkAuth } from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
   const BOT_USERNAME = process.env.REACT_APP_BOT_USERNAME;
+  const widgetRef = useRef(null);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -26,17 +27,27 @@ const Login = () => {
           }
         });
     };
-  }, [navigate]);
+
+    // Inject Telegram widget script
+    if (BOT_USERNAME && widgetRef.current) {
+      widgetRef.current.innerHTML = '';
+      const script = document.createElement('script');
+      script.src = 'https://telegram.org/js/telegram-widget.js?7';
+      script.setAttribute('data-telegram-login', BOT_USERNAME);
+      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-userpic', 'false');
+      script.setAttribute('data-auth-url', 'https://apiwidget-v1.vercel.app/api/auth');
+      script.setAttribute('data-request-access', 'write');
+      script.setAttribute('data-onauth', 'window.onTelegramAuth(user)');
+      script.async = true;
+      widgetRef.current.appendChild(script);
+    }
+  }, [navigate, BOT_USERNAME]);
 
   return (
     <div className="middle-center">
       <h1>Hello, Anonymous!</h1>
-      <div
-        id="telegram-login"
-        dangerouslySetInnerHTML={{
-          __html: `<script async src="https://telegram.org/js/telegram-widget.js" data-telegram-login="${BOT_USERNAME}" data-size="large" data-userpic="false" data-auth-url="https://apiwidget-v1.vercel.app/api/auth" data-request-access="write" data-onauth="window.onTelegramAuth(user)" ></script>`
-        }}
-      />
+      <div id="telegram-login" ref={widgetRef} />
     </div>
   );
 };
