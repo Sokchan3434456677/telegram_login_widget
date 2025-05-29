@@ -17,7 +17,7 @@ const Login = () => {
 
     // Listen for Telegram login callback
     window.onTelegramAuth = function(userData) {
-      fetch(`http://localhost:5000/api/auth?${new URLSearchParams(userData).toString()}`)
+      fetch(`https://apiwidget-v1.vercel.app/api/auth?${new URLSearchParams(userData).toString()}`)
         .then(res => res.json())
         .then(data => {
           if (data.token) {
@@ -34,7 +34,7 @@ const Login = () => {
       <div
         id="telegram-login"
         dangerouslySetInnerHTML={{
-          __html: `<script async src="https://telegram.org/js/telegram-widget.js" data-telegram-login="${BOT_USERNAME}" data-size="large" data-userpic="false" data-auth-url="http://localhost:5000/api/auth" data-request-access="write" data-onauth="window.onTelegramAuth(user)" ></script>`
+          __html: `<script async src="https://telegram.org/js/telegram-widget.js" data-telegram-login="${BOT_USERNAME}" data-size="large" data-userpic="false" data-auth-url="https://apiwidget-v1.vercel.app/api/auth" data-request-access="write" data-onauth="window.onTelegramAuth(user)" ></script>`
         }}
       />
     </div>
