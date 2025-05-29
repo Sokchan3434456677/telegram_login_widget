@@ -18,9 +18,6 @@ const Login = () => {
 
     // Listen for Telegram login callback
 
-    window.onTelegramAuth = function(user) {
-      fetch(`https://apiwidget-v1.vercel.app/api/auth?${new URLSearchParams(user).toString()}`)
-
     window.onTelegramAuth = function(userData) {
       fetch(`https://apiwidget-v1.vercel.app/api/auth?${new URLSearchParams(userData).toString()}`)
 
