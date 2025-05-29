@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://apiwidget-v1.vercel.app';
 
 export const checkAuth = async () => {
   try {
