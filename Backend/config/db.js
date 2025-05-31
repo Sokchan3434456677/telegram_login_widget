@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const { MONGODB_URI } = require('./env');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://sokchanear0:lDSUqqnQNYBxWJll@cluster0.exfhtoc.mongodb.net/Dl_DAshboard?retryWrites=true&w=majority&appName=Cluster0', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

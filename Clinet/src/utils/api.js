@@ -1,19 +1,33 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'https://apiwidget-v1.vercel.app/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://apiwidget-v1.vercel.app/api';
 
 export const checkAuth = async () => {
   try {
-    // Get telegram_id from localStorage or another source
-    const telegram_id = localStorage.getItem('telegram_id');
-    if (!telegram_id) return null;
-    const response = await axios.get(`${API_BASE_URL}/user?telegram_id=${telegram_id}`);
-    return response.data;
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/check-auth`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    return data.success ? data.user : null;
   } catch (error) {
+    console.error('Auth check error:', error);
     return null;
   }
 };
 
 export const logout = async () => {
-  localStorage.removeItem('telegram_id');
+  try {
+    const token = localStorage.getItem('token');
+    await fetch(`${API_URL}/logout`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    localStorage.removeItem('token');
+    localStorage.removeItem('telegram_id');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 };

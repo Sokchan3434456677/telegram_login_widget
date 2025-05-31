@@ -1,28 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
+const app = require('./app');
 const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const { PORT, CLIENT_URL } = require('./config/env');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
-const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+// Connect to database
 connectDB();
-
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors({
-  origin: CLIENT_URL,
-  credentials: true
-}));
-
-// Routes
-app.use('/api', authRoutes);
-app.use('/api', userRoutes);
 
 // Start server
 app.listen(PORT, () => {
